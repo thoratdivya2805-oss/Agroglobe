@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AgroGlobe – Farm Fresh, Delivered Worldwide</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--green:#1B7A4A;--lime:#52C788;--gold:#E8A020;--cream:#F7F4EE;--dark:#0F2318;--light:#FFFFFF;--muted:#6b7c6e}
+    body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--dark)}
+
+    /* TOP BAR */
+    .topbar{background:var(--dark);color:#aaa;font-size:.78rem;padding:.4rem 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.4rem}
+    .topbar a{color:var(--lime);text-decoration:none;font-weight:700}
+    .topbar-right{display:flex;gap:1.4rem;align-items:center}
+
+    /* NAV */
+    nav{display:flex;align-items:center;justify-content:space-between;padding:.85rem 5%;background:var(--light);position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.07)}
+    .logo{display:flex;align-items:center;gap:.55rem}
+    .logo-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--green),var(--lime));display:flex;align-items:center;justify-content:center;font-size:1.3rem}
+    .logo-text{display:flex;flex-direction:column;line-height:1.1}
+    .logo-name{font-size:1.15rem;font-weight:800;color:var(--green)}
+    .logo-tag{font-size:.6rem;font-weight:700;color:var(--gold);letter-spacing:.8px;text-transform:uppercase}
+    .nav-links{display:flex;gap:1.8rem;list-style:none}
+    .nav-links a{text-decoration:none;color:var(--dark);font-size:.86rem;font-weight:600;transition:color .2s}
+    .nav-links a:hover{color:var(--green)}
+    .nav-right{display:flex;align-items:center;gap:.8rem}
+
+    /* LANG SWITCHER */
+    .lang-switcher{position:relative}
+    .lang-btn{display:flex;align-items:center;gap:.35rem;border:1.5px solid #ddd;border-radius:20px;padding:.3rem .8rem;font-size:.78rem;font-family:'DM Sans',sans-serif;font-weight:700;color:var(--dark);background:#fff;cursor:pointer;transition:border-color .2s}
+    .lang-btn:hover{border-color:var(--green)}
+    .lang-dropdown{display:none;position:absolute;top:calc(100% + 8px);right:0;background:#fff;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.13);min-width:190px;z-index:200;overflow:hidden}
+    .lang-dropdown.open{display:block}
+    .lang-option{display:flex;align-items:center;gap:.6rem;padding:.6rem 1rem;font-size:.82rem;font-weight:600;cursor:pointer;transition:background .15s}
+    .lang-option:hover{background:#f0faf5}
+    .lang-option.active{background:#e6f6ee;color:var(--green)}
+    .lang-flag{font-size:1.1rem}
+
+    .nav-cta{background:var(--green);color:#fff;padding:.48rem 1.2rem;border-radius:24px;font-size:.86rem;font-weight:700;text-decoration:none;transition:background .2s}
+    .nav-cta:hover{background:var(--dark)}
+
+    /* HERO */
+    .hero{display:grid;grid-template-columns:1fr 1fr;min-height:84vh;padding:3.5rem 5%;align-items:center;gap:3rem}
+    .hero-pill{display:inline-flex;align-items:center;gap:.4rem;background:#e6f6ee;color:var(--green);font-size:.75rem;font-weight:700;padding:.3rem .85rem;border-radius:20px;margin-bottom:.9rem}
+    .hero-text h1{font-size:clamp(1.75rem,3.2vw,2.7rem);font-weight:700;line-height:1.22;color:var(--dark);margin-bottom:1rem}
+    .hero-text h1 span{color:var(--green)}
+    .hero-text p{font-size:.96rem;color:var(--muted);line-height:1.75;max-width:400px;margin-bottom:1.8rem}
+    .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.8rem}
+    .btn-primary{background:var(--green);color:#fff;padding:.7rem 1.6rem;border-radius:28px;font-weight:700;font-size:.88rem;text-decoration:none;transition:background .2s;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
+    .btn-primary:hover{background:var(--dark)}
+    .btn-secondary{background:transparent;color:var(--green);padding:.7rem 1.6rem;border-radius:28px;font-weight:700;font-size:.88rem;text-decoration:none;border:2px solid var(--green);transition:all .2s}
+    .btn-secondary:hover{background:var(--green);color:#fff}
+    .hero-flags{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:var(--muted);font-weight:600}
+    .hero-flags span{font-size:1.2rem}
+    .hero-visual{position:relative;border-radius:24px;overflow:hidden;background:linear-gradient(145deg,#c8f0da 0%,#a8dfc0 60%,#52c788 100%);min-height:420px;display:flex;align-items:center;justify-content:center}
+    .hero-visual svg{width:255px;opacity:.9}
+    .badge{position:absolute;bottom:1.8rem;left:1.8rem;background:var(--light);border-radius:14px;padding:.55rem 1rem;display:flex;align-items:center;gap:.5rem;box-shadow:0 4px 18px rgba(0,0,0,.12)}
+    .badge-dot{width:8px;height:8px;border-radius:50%;background:var(--lime);animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+    .badge span{font-size:.76rem;font-weight:700;color:var(--dark)}
+    .badge2{position:absolute;top:1.8rem;right:1.8rem;background:var(--gold);color:#fff;border-radius:12px;padding:.45rem .85rem;font-size:.73rem;font-weight:700}
+
+    /* COUNTRIES STRIP */
+    .countries-strip{background:var(--light);padding:1.2rem 5%;border-top:1px solid #e8e4db;border-bottom:1px solid #e8e4db;display:flex;align-items:center;gap:2rem;flex-wrap:wrap;justify-content:center}
+    .countries-strip>span{font-size:.75rem;font-weight:700;color:var(--muted)}
+    .country-flags{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;justify-content:center}
+    .cflag{display:flex;align-items:center;gap:.35rem;font-size:.78rem;font-weight:600;color:var(--dark)}
+    .cflag .f{font-size:1.25rem}
+
+    /* STATS */
+    .stats{display:flex;justify-content:space-around;flex-wrap:wrap;gap:1rem;background:var(--green);color:#fff;padding:1.8rem 5%;text-align:center}
+    .stat-item h3{font-size:1.7rem;font-weight:700}
+    .stat-item p{font-size:.78rem;opacity:.8;margin-top:.2rem;font-weight:600}
+
+    /* SECTIONS */
+    .section{padding:3.5rem 5%}
+    .section-title{font-size:1.45rem;font-weight:700;margin-bottom:.3rem}
+    .section-sub{color:var(--muted);font-size:.88rem;margin-bottom:2rem}
+
+    /* CATEGORIES */
+    .categories{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:1rem}
+    .cat-card{background:var(--light);border-radius:14px;padding:1.2rem 1rem;text-align:center;cursor:pointer;border:2px solid transparent;transition:border .2s,transform .2s}
+    .cat-card:hover{border-color:var(--lime);transform:translateY(-3px)}
+    .cat-icon{font-size:2rem;margin-bottom:.4rem}
+    .cat-card h4{font-size:.82rem;font-weight:700}
+
+    /* PRODUCTS */
+    .products{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:1.2rem}
+    .product-card{background:var(--light);border-radius:18px;overflow:hidden;transition:transform .2s,box-shadow .2s}
+    .product-card:hover{transform:translateY(-4px);box-shadow:0 10px 28px rgba(0,0,0,.09)}
+    .product-img{height:148px;display:flex;align-items:center;justify-content:center;font-size:3.5rem;position:relative}
+    .product-tag{position:absolute;top:.7rem;left:.7rem;background:var(--gold);color:#fff;font-size:.65rem;font-weight:700;padding:.2rem .55rem;border-radius:10px}
+    .product-info{padding:.9rem 1rem 1.1rem}
+    .product-info h4{font-weight:700;font-size:.93rem;margin-bottom:.15rem}
+    .product-info .farmer-name{font-size:.73rem;color:#8B5E3C;font-weight:600}
+    .product-footer{display:flex;align-items:center;justify-content:space-between;margin-top:.7rem}
+    .price{font-size:.98rem;font-weight:700;color:var(--green)}
+    .price small{font-size:.7rem;color:var(--muted);font-weight:600}
+    .add-btn{background:var(--green);color:#fff;border:none;border-radius:50%;width:32px;height:32px;font-size:1.2rem;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center}
+    .add-btn:hover{background:var(--dark)}
+
+    /* HOW IT WORKS */
+    .how{background:#f0faf5}
+    .steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.5rem}
+    .step-card{background:var(--light);border-radius:16px;padding:1.5rem}
+    .step-num{width:32px;height:32px;border-radius:50%;background:var(--green);color:#fff;font-size:.85rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:.9rem}
+    .step-card h4{font-weight:700;font-size:.92rem;margin-bottom:.3rem}
+    .step-card p{font-size:.83rem;color:var(--muted);line-height:1.6}
+
+    /* TRUST */
+    .trust-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1.2rem}
+    .trust-card{background:var(--light);border-radius:16px;padding:1.4rem}
+    .trust-icon{font-size:1.8rem;margin-bottom:.6rem}
+    .trust-card h4{font-weight:700;font-size:.92rem;margin-bottom:.3rem}
+    .trust-card p{font-size:.83rem;color:var(--muted);line-height:1.6}
+
+    /* VERIFIED FARMERS */
+    .farmers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.3rem}
+    .farmer-card{background:var(--light);border-radius:20px;padding:1.4rem;display:flex;flex-direction:column;gap:.8rem;transition:transform .2s,box-shadow .2s;border:1.5px solid #eee}
+    .farmer-card:hover{transform:translateY(-4px);box-shadow:0 10px 28px rgba(0,0,0,.09)}
+    .farmer-top{display:flex;align-items:center;gap:.9rem}
+    .farmer-avatar{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0}
+    .farmer-id{flex:1}
+    .farmer-id h4{font-weight:700;font-size:.95rem;margin-bottom:.1rem}
+    .farmer-id .location{font-size:.75rem;color:var(--muted);font-weight:600}
+    .verified-badge{display:inline-flex;align-items:center;gap:.28rem;background:#e6f6ee;color:var(--green);font-size:.68rem;font-weight:700;padding:.22rem .6rem;border-radius:20px;white-space:nowrap}
+    .farmer-products{display:flex;gap:.4rem;flex-wrap:wrap}
+    .prod-pill{background:var(--cream);border-radius:20px;padding:.2rem .6rem;font-size:.72rem;font-weight:700;color:var(--dark)}
+    .farmer-stats{display:flex;gap:1rem;padding-top:.6rem;border-top:1px solid #f0ede6}
+    .f-stat{display:flex;flex-direction:column}
+    .f-stat strong{font-size:.88rem;font-weight:700;color:var(--green)}
+    .f-stat span{font-size:.68rem;color:var(--muted);font-weight:600}
+    .farmer-certs{display:flex;gap:.4rem;flex-wrap:wrap}
+    .cert-tag{background:#fff8e1;color:#b07d00;font-size:.68rem;font-weight:700;padding:.18rem .55rem;border-radius:8px}
+    .contact-btn{margin-top:auto;background:var(--green);color:#fff;border:none;border-radius:24px;padding:.5rem 1rem;font-size:.8rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s;text-align:center}
+    .contact-btn:hover{background:var(--dark)}
+
+    /* CTA BANNER */
+    .cta-banner{margin:0 5% 3.5rem;border-radius:22px;background:var(--dark);color:#fff;padding:2.5rem 2.2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem}
+    .cta-banner h2{font-size:1.4rem;font-weight:700;max-width:480px}
+    .cta-banner p{opacity:.65;font-size:.86rem;margin-top:.3rem}
+
+    /* FOOTER */
+    footer{background:var(--dark);color:#ccc;padding:2.5rem 5% 1.5rem;font-size:.82rem}
+    .footer-top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:2rem;padding-bottom:1.8rem;border-bottom:1px solid #1e3d28;margin-bottom:1.2rem}
+    .footer-col h5{color:#fff;font-weight:700;margin-bottom:.7rem;font-size:.85rem}
+    .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:.45rem}
+    .footer-col a{color:#888;text-decoration:none;font-size:.8rem}
+    .footer-col a:hover{color:var(--lime)}
+    .footer-col p{color:#888;font-size:.8rem;line-height:1.9}
+    .footer-col a.green{color:var(--lime)}
+    .footer-brand p{margin-top:.8rem;color:#888;font-size:.8rem;line-height:1.7;max-width:220px}
+    .footer-bottom{text-align:center;color:#444;font-size:.75rem;padding-top:.5rem}
+
+    /* CONTACT FORM */
+    .contact-form-col{flex:1;min-width:280px}
+    .contact-form-col h5{color:#fff;font-weight:700;margin-bottom:1rem;font-size:.88rem}
+    .cf-group{margin-bottom:.8rem;position:relative}
+    .cf-group input,.cf-group select,.cf-group textarea{
+      width:100%;background:#1a3528;border:1.5px solid #2e4a35;border-radius:10px;
+      padding:.58rem .85rem;font-size:.82rem;font-family:'DM Sans',sans-serif;
+      color:#ddd;outline:none;transition:border-color .2s;
+    }
+    .cf-group textarea{resize:vertical;min-height:78px}
+    .cf-group select option{background:#1a3528;color:#ddd}
+    .cf-group input::placeholder,.cf-group textarea::placeholder{color:#556}
+    .cf-group input:focus,.cf-group select:focus,.cf-group textarea:focus{border-color:var(--lime)}
+    .cf-group.has-error input,.cf-group.has-error select,.cf-group.has-error textarea{border-color:#ff6b6b!important}
+    .cf-group.is-valid input,.cf-group.is-valid select,.cf-group.is-valid textarea{border-color:var(--lime)}
+    .cf-err{display:none;color:#ff8a8a;font-size:.7rem;margin-top:.28rem;font-weight:600;padding-left:.1rem}
+    .cf-group.has-error .cf-err{display:block}
+    .cf-row{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+    .cf-send-btn{width:100%;background:var(--green);color:#fff;border:none;border-radius:24px;
+      padding:.62rem 1rem;font-size:.84rem;font-weight:700;font-family:'DM Sans',sans-serif;
+      cursor:pointer;transition:all .2s;margin-top:.4rem;letter-spacing:.2px}
+    .cf-send-btn:hover{background:var(--lime);color:var(--dark)}
+    .cf-send-btn:disabled{opacity:.6;cursor:not-allowed}
+    .cf-toast{display:none;background:#0d2418;border:1.5px solid var(--lime);border-radius:12px;
+      padding:.75rem 1rem;margin-top:.8rem;color:var(--lime);font-size:.8rem;font-weight:700;text-align:center}
+
+    /* RTL support */
+    [dir="rtl"] body{direction:rtl}
+    [dir="rtl"] .topbar,[dir="rtl"] nav,[dir="rtl"] .footer-top{flex-direction:row-reverse}
+    [dir="rtl"] .hero{direction:rtl}
+
+    @media(max-width:700px){
+      .hero{grid-template-columns:1fr}
+      .hero-visual{min-height:220px}
+      .nav-links{display:none}
+      .cta-banner{flex-direction:column}
+      .topbar{font-size:.72rem}
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <span data-i18n="topbar_msg">🌍 Shipping to 40+ countries &nbsp;|&nbsp; Bulk export inquiries welcome</span>
+  <div class="topbar-right">
+    <span>📞 <a href="tel:+918800123456">+91 88001 23456</a></span>
+    <span>📧 <a href="mailto:export@agroglobe.com">export@agroglobe.com</a></span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <div class="logo-icon">🌐</div>
+    <div class="logo-text">
+      <span class="logo-name">AgroGlobe</span>
+      <span class="logo-tag" data-i18n="logo_tag">International Farm Market</span>
+    </div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#" data-i18n="nav_home">Home</a></li>
+    <li><a href="#" data-i18n="nav_products">Products</a></li>
+    <li><a href="#" data-i18n="nav_export">Export</a></li>
+    <li><a href="#" data-i18n="nav_farmers">Farmers</a></li>
+    <li><a href="#" data-i18n="nav_about">About</a></li>
+  </ul>
+  <div class="nav-right">
+    <!-- Language Switcher -->
+    <div class="lang-switcher">
+      <button class="lang-btn" onclick="toggleLangDropdown()">
+        <span id="current-flag">🇬🇧</span>
+        <span id="current-lang">EN</span> ▾
+      </button>
+      <div class="lang-dropdown" id="lang-dropdown">
+        <div class="lang-option active" onclick="setLang('en')"><span class="lang-flag">🇬🇧</span> English</div>
+        <div class="lang-option" onclick="setLang('hi')"><span class="lang-flag">🇮🇳</span> हिंदी</div>
+        <div class="lang-option" onclick="setLang('ar')"><span class="lang-flag">🇦🇪</span> العربية</div>
+        <div class="lang-option" onclick="setLang('de')"><span class="lang-flag">🇩🇪</span> Deutsch</div>
+        <div class="lang-option" onclick="setLang('fr')"><span class="lang-flag">🇫🇷</span> Français</div>
+        <div class="lang-option" onclick="setLang('es')"><span class="lang-flag">🇪🇸</span> Español</div>
+        <div class="lang-option" onclick="setLang('ja')"><span class="lang-flag">🇯🇵</span> 日本語</div>
+        <div class="lang-option" onclick="setLang('zh')"><span class="lang-flag">🇨🇳</span> 中文</div>
+        <div class="lang-option" onclick="setLang('pt')"><span class="lang-flag">🇧🇷</span> Português</div>
+        <div class="lang-option" onclick="setLang('ko')"><span class="lang-flag">🇰🇷</span> 한국어</div>
+        <div class="lang-option" onclick="setLang('mr')"><span class="lang-flag">🇮🇳</span> मराठी</div>
+      </div>
+    </div>
+    <a href="#" class="nav-cta" data-i18n="nav_cta">Start Exporting</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <div class="hero-pill" data-i18n="hero_pill">🌾 Trusted by buyers in 40+ countries</div>
+    <h1 data-i18n="hero_h1">Farm Fresh Produce,<br><span data-i18n="hero_h1_span">Shipped Worldwide</span></h1>
+    <p data-i18n="hero_p">Connect directly with verified Indian farmers. Source premium vegetables, grains, spices, and more — export-certified and delivered to your door, anywhere on the globe.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary" data-i18n="hero_btn1">Browse Products</a>
+      <a href="#" class="btn-secondary" data-i18n="hero_btn2">Become a Seller</a>
+    </div>
+    <div class="hero-flags">
+      <span data-i18n="ships_to">We ship to:</span>
+      🇺🇸 🇦🇪 🇬🇧 🇩🇪 🇸🇬 🇦🇺 🇨🇦 <span data-i18n="more_countries">+33 more</span>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="100" cy="140" rx="70" ry="30" fill="#1b7a4a" opacity=".3"/>
+      <path d="M40 120 Q50 80 100 75 Q150 80 160 120 L155 155 Q100 168 45 155 Z" fill="#8B5E3C"/>
+      <path d="M45 120 Q100 110 155 120" stroke="#6b4226" stroke-width="2" fill="none"/>
+      <circle cx="80" cy="108" r="16" fill="#e63946"/>
+      <rect x="77" y="91" width="6" height="8" rx="2" fill="#1b7a4a"/>
+      <circle cx="118" cy="105" r="15" fill="#e9c46a"/>
+      <rect x="116" y="89" width="5" height="7" rx="2" fill="#52c788"/>
+      <ellipse cx="100" cy="115" rx="8" ry="13" fill="#f4a261"/>
+      <rect x="97" y="101" width="6" height="7" rx="2" fill="#52c788"/>
+      <path d="M65 120 Q100 50 135 120" stroke="#6b4226" stroke-width="5" fill="none" stroke-linecap="round"/>
+    </svg>
+    <div class="badge"><div class="badge-dot"></div><span data-i18n="badge_farmers">500+ Verified Farmers</span></div>
+    <div class="badge2" data-i18n="badge_export">✈️ Export Ready</div>
+  </div>
+</section>
+
+<!-- COUNTRIES STRIP -->
+<div class="countries-strip">
+  <span data-i18n="active_buyers">ACTIVE BUYERS IN</span>
+  <div class="country-flags">
+    <div class="cflag"><span class="f">🇺🇸</span> USA</div>
+    <div class="cflag"><span class="f">🇦🇪</span> UAE</div>
+    <div class="cflag"><span class="f">🇬🇧</span> UK</div>
+    <div class="cflag"><span class="f">🇩🇪</span> Germany</div>
+    <div class="cflag"><span class="f">🇸🇬</span> Singapore</div>
+    <div class="cflag"><span class="f">🇯🇵</span> Japan</div>
+    <div class="cflag"><span class="f">🇦🇺</span> Australia</div>
+    <div class="cflag"><span class="f">🇨🇦</span> Canada</div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat-item"><h3>500+</h3><p data-i18n="stat1">Verified Farmers</p></div>
+  <div class="stat-item"><h3>40+</h3><p data-i18n="stat2">Countries Served</p></div>
+  <div class="stat-item"><h3>1,200+</h3><p data-i18n="stat3">Export Products</p></div>
+  <div class="stat-item"><h3>₹120 Cr+</h3><p data-i18n="stat4">Farmer Earnings</p></div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="section">
+  <h2 class="section-title" data-i18n="cat_title">Browse by Category</h2>
+  <p class="section-sub" data-i18n="cat_sub">Export-certified produce, ready for international shipment</p>
+  <div class="categories">
+    <div class="cat-card"><div class="cat-icon">🥦</div><h4 data-i18n="cat1">Vegetables</h4></div>
+    <div class="cat-card"><div class="cat-icon">🍎</div><h4 data-i18n="cat2">Fruits</h4></div>
+    <div class="cat-card"><div class="cat-icon">🌾</div><h4 data-i18n="cat3">Grains</h4></div>
+    <div class="cat-card"><div class="cat-icon">🌶️</div><h4 data-i18n="cat4">Spices</h4></div>
+    <div class="cat-card"><div class="cat-icon">🍯</div><h4 data-i18n="cat5">Honey</h4></div>
+    <div class="cat-card"><div class="cat-icon">🌿</div><h4 data-i18n="cat6">Herbs</h4></div>
+    <div class="cat-card"><div class="cat-icon">🥜</div><h4 data-i18n="cat7">Pulses</h4></div>
+    <div class="cat-card"><div class="cat-icon">🫒</div><h4 data-i18n="cat8">Cold Press Oils</h4></div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="section" style="padding-top:0">
+  <h2 class="section-title" data-i18n="prod_title">Top Export Products</h2>
+  <p class="section-sub" data-i18n="prod_sub">High-demand produce across global markets</p>
+  <div class="products">
+    <div class="product-card">
+      <div class="product-img" style="background:#fde8e8;">🍅<span class="product-tag" data-i18n="tag_best">Best Seller</span></div>
+      <div class="product-info">
+        <h4 data-i18n="p1_name">Organic Tomatoes</h4>
+        <div class="farmer-name">🌱 Ravi Kumar, Punjab 🇮🇳</div>
+        <div class="product-footer"><span class="price">$1.20 <small>/ kg</small></span><button class="add-btn">+</button></div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img" style="background:#fff3cd;">🌶️<span class="product-tag" data-i18n="tag_demand">High Demand</span></div>
+      <div class="product-info">
+        <h4 data-i18n="p2_name">Red Chilli Powder</h4>
+        <div class="farmer-name">🌱 Anita Sharma, Rajasthan 🇮🇳</div>
+        <div class="product-footer"><span class="price">$3.50 <small>/ kg</small></span><button class="add-btn">+</button></div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img" style="background:#e8f5e9;">🧄<span class="product-tag" data-i18n="tag_export">Export Grade</span></div>
+      <div class="product-info">
+        <h4 data-i18n="p3_name">Fresh Garlic</h4>
+        <div class="farmer-name">🌱 Suresh Patil, MP 🇮🇳</div>
+        <div class="product-footer"><span class="price">$2.10 <small>/ kg</small></span><button class="add-btn">+</button></div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img" style="background:#f3e5f5;">🍚<span class="product-tag" data-i18n="tag_premium">Premium</span></div>
+      <div class="product-info">
+        <h4 data-i18n="p4_name">Basmati Rice</h4>
+        <div class="farmer-name">🌱 Laxmi Devi, UP 🇮🇳</div>
+        <div class="product-footer"><span class="price">$1.80 <small>/ kg</small></span><button class="add-btn">+</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section how">
+  <h2 class="section-title" data-i18n="how_title">How It Works</h2>
+  <p class="section-sub" data-i18n="how_sub">From farm to your international destination in 4 simple steps</p>
+  <div class="steps">
+    <div class="step-card"><div class="step-num">1</div><h4 data-i18n="step1_h">Browse & Select</h4><p data-i18n="step1_p">Search products by category, country of origin, or certification type.</p></div>
+    <div class="step-card"><div class="step-num">2</div><h4 data-i18n="step2_h">Request a Quote</h4><p data-i18n="step2_p">Contact verified farmers directly or submit a bulk export inquiry.</p></div>
+    <div class="step-card"><div class="step-num">3</div><h4 data-i18n="step3_h">We Handle Logistics</h4><p data-i18n="step3_p">We manage export documentation, cold chain, and international shipping.</p></div>
+    <div class="step-card"><div class="step-num">4</div><h4 data-i18n="step4_h">Delivered Worldwide</h4><p data-i18n="step4_p">Receive fresh, certified produce at your doorstep — anywhere on earth.</p></div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="section">
+  <h2 class="section-title" data-i18n="why_title">Why AgroGlobe?</h2>
+  <p class="section-sub" data-i18n="why_sub">Built for global buyers, powered by local farmers</p>
+  <div class="trust-grid">
+    <div class="trust-card"><div class="trust-icon">✅</div><h4 data-i18n="t1_h">Export Certified</h4><p data-i18n="t1_p">All products carry APEDA, FSSAI, and phytosanitary certifications for global markets.</p></div>
+    <div class="trust-card"><div class="trust-icon">🌡️</div><h4 data-i18n="t2_h">Cold Chain Delivery</h4><p data-i18n="t2_p">Temperature-controlled logistics from farm to port, preserving freshness worldwide.</p></div>
+    <div class="trust-card"><div class="trust-icon">💱</div><h4 data-i18n="t3_h">Multi-Currency Pricing</h4><p data-i18n="t3_p">Pay in USD, EUR, AED, GBP, or INR. Transparent pricing with no hidden fees.</p></div>
+    <div class="trust-card"><div class="trust-icon">🤝</div><h4 data-i18n="t4_h">Direct Farmer Connect</h4><p data-i18n="t4_p">No middlemen. Chat directly with the farmer and negotiate on bulk orders.</p></div>
+  </div>
+</section>
+
+<!-- VERIFIED FARMERS -->
+<section class="section" style="background:var(--light);">
+  <h2 class="section-title" data-i18n="farmers_title">Meet Our Verified Farmers</h2>
+  <p class="section-sub" data-i18n="farmers_sub">Every seller is identity-verified, farm-inspected, and export-certified</p>
+  <div class="farmers-grid">
+    <div class="farmer-card">
+      <div class="farmer-top">
+        <div class="farmer-avatar" style="background:#fde8e8;">👨‍🌾</div>
+        <div class="farmer-id"><h4>Ravi Kumar</h4><div class="location">📍 Ludhiana, Punjab 🇮🇳</div></div>
+        <div class="verified-badge">✔ <span data-i18n="verified">Verified</span></div>
+      </div>
+      <div class="farmer-products"><span class="prod-pill">🍅 Tomatoes</span><span class="prod-pill">🧅 Onions</span><span class="prod-pill">🥕 Carrots</span></div>
+      <div class="farmer-certs"><span class="cert-tag">APEDA</span><span class="cert-tag">FSSAI</span><span class="cert-tag">Organic</span></div>
+      <div class="farmer-stats">
+        <div class="f-stat"><strong>8 yrs</strong><span data-i18n="experience">Experience</span></div>
+        <div class="f-stat"><strong>4.9 ★</strong><span data-i18n="rating">Rating</span></div>
+        <div class="f-stat"><strong>12</strong><span data-i18n="countries_exp">Countries</span></div>
+      </div>
+      <button class="contact-btn" data-i18n="contact_farmer">📩 Contact Farmer</button>
+    </div>
+    <div class="farmer-card">
+      <div class="farmer-top">
+        <div class="farmer-avatar" style="background:#fff3cd;">👩‍🌾</div>
+        <div class="farmer-id"><h4>Anita Sharma</h4><div class="location">📍 Jodhpur, Rajasthan 🇮🇳</div></div>
+        <div class="verified-badge">✔ <span data-i18n="verified">Verified</span></div>
+      </div>
+      <div class="farmer-products"><span class="prod-pill">🌶️ Red Chilli</span><span class="prod-pill">🌿 Coriander</span></div>
+      <div class="farmer-certs"><span class="cert-tag">APEDA</span><span class="cert-tag">Spice Board</span></div>
+      <div class="farmer-stats">
+        <div class="f-stat"><strong>12 yrs</strong><span data-i18n="experience">Experience</span></div>
+        <div class="f-stat"><strong>4.8 ★</strong><span data-i18n="rating">Rating</span></div>
+        <div class="f-stat"><strong>18</strong><span data-i18n="countries_exp">Countries</span></div>
+      </div>
+      <button class="contact-btn" data-i18n="contact_farmer">📩 Contact Farmer</button>
+    </div>
+    <div class="farmer-card">
+      <div class="farmer-top">
+        <div class="farmer-avatar" style="background:#e8f5e9;">👨‍🌾</div>
+        <div class="farmer-id"><h4>Suresh Patil</h4><div class="location">📍 Indore, MP 🇮🇳</div></div>
+        <div class="verified-badge">✔ <span data-i18n="verified">Verified</span></div>
+      </div>
+      <div class="farmer-products"><span class="prod-pill">🧄 Garlic</span><span class="prod-pill">🫘 Soybean</span></div>
+      <div class="farmer-certs"><span class="cert-tag">FSSAI</span><span class="cert-tag">ISO 22000</span><span class="cert-tag">Organic</span></div>
+      <div class="farmer-stats">
+        <div class="f-stat"><strong>15 yrs</strong><span data-i18n="experience">Experience</span></div>
+        <div class="f-stat"><strong>5.0 ★</strong><span data-i18n="rating">Rating</span></div>
+        <div class="f-stat"><strong>22</strong><span data-i18n="countries_exp">Countries</span></div>
+      </div>
+      <button class="contact-btn" data-i18n="contact_farmer">📩 Contact Farmer</button>
+    </div>
+    <div class="farmer-card">
+      <div class="farmer-top">
+        <div class="farmer-avatar" style="background:#f3e5f5;">👩‍🌾</div>
+        <div class="farmer-id"><h4>Laxmi Devi</h4><div class="location">📍 Lucknow, UP 🇮🇳</div></div>
+        <div class="verified-badge">✔ <span data-i18n="verified">Verified</span></div>
+      </div>
+      <div class="farmer-products"><span class="prod-pill">🍚 Basmati Rice</span><span class="prod-pill">🌾 Wheat</span></div>
+      <div class="farmer-certs"><span class="cert-tag">APEDA</span><span class="cert-tag">GI Tagged</span><span class="cert-tag">FSSAI</span></div>
+      <div class="farmer-stats">
+        <div class="f-stat"><strong>10 yrs</strong><span data-i18n="experience">Experience</span></div>
+        <div class="f-stat"><strong>4.7 ★</strong><span data-i18n="rating">Rating</span></div>
+        <div class="f-stat"><strong>9</strong><span data-i18n="countries_exp">Countries</span></div>
+      </div>
+      <button class="contact-btn" data-i18n="contact_farmer">📩 Contact Farmer</button>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<div class="cta-banner">
+  <div>
+    <h2 data-i18n="cta_h">Ready to Sell Your Produce Globally?</h2>
+    <p data-i18n="cta_p">Join 500+ farmers already earning in foreign currency by listing on AgroGlobe.</p>
+  </div>
+  <a href="#" class="btn-primary" data-i18n="cta_btn">Register as Farmer</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-col footer-brand">
+      <div class="logo">
+        <div class="logo-icon">🌐</div>
+        <div class="logo-text">
+          <span class="logo-name" style="color:var(--lime)">AgroGlobe</span>
+          <span class="logo-tag" style="color:#888" data-i18n="logo_tag">International Farm Market</span>
+        </div>
+      </div>
+      <p data-i18n="footer_brand_p">Empowering Indian farmers to reach global buyers since 2024.</p>
+    </div>
+
+    <div class="footer-col">
+      <h5 data-i18n="footer_contact">Contact</h5>
+      <p>📞 <a href="tel:+918800123456" class="green">+91 88001 23456</a><br>📧 <a href="mailto:export@agroglobe.com" class="green">export@agroglobe.com</a><br>🕗 Mon–Sat, 8 AM – 8 PM IST</p>
+      <br>
+      <h5 data-i18n="footer_links">Quick Links</h5>
+      <ul>
+        <li><a href="#" data-i18n="nav_products">Products</a></li>
+        <li><a href="#" data-i18n="nav_export">Export Inquiry</a></li>
+        <li><a href="#" data-i18n="nav_farmers">Our Farmers</a></li>
+        <li><a href="#">Certifications</a></li>
+        <li><a href="#">Shipping Info</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h5 data-i18n="footer_ships">We Ship To</h5>
+      <p>🇺🇸 USA &nbsp;🇦🇪 UAE &nbsp;🇬🇧 UK<br>🇩🇪 Germany &nbsp;🇸🇬 Singapore<br>🇯🇵 Japan &nbsp;🇦🇺 Australia<br>🇨🇦 Canada &nbsp;+ 32 more</p>
+    </div>
+
+    <!-- CONTACT FORM -->
+    <div class="contact-form-col">
+      <h5>📬 Send Us a Message</h5>
+      <div class="cf-row">
+        <div class="cf-group" id="grp-name">
+          <input type="text" id="cf-name" placeholder="Full Name" autocomplete="off"/>
+          <div class="cf-err" id="err-name">⚠ Name is required</div>
+        </div>
+        <div class="cf-group" id="grp-email">
+          <input type="email" id="cf-email" placeholder="Email Address" autocomplete="off"/>
+          <div class="cf-err" id="err-email">⚠ Valid email required</div>
+        </div>
+      </div>
+      <div class="cf-row">
+        <div class="cf-group" id="grp-phone">
+          <input type="tel" id="cf-phone" placeholder="Phone Number" autocomplete="off"/>
+          <div class="cf-err" id="err-phone">⚠ Valid phone required (min 7 digits)</div>
+        </div>
+        <div class="cf-group" id="grp-country">
+          <select id="cf-country">
+            <option value="">Select Country</option>
+            <option>USA</option><option>UAE</option><option>UK</option>
+            <option>Germany</option><option>France</option><option>Singapore</option>
+            <option>Japan</option><option>Australia</option><option>Canada</option>
+            <option>India</option><option>Other</option>
+          </select>
+          <div class="cf-err" id="err-country">⚠ Please select your country</div>
+        </div>
+      </div>
+      <div class="cf-group" id="grp-subject">
+        <select id="cf-subject">
+          <option value="">Inquiry Type</option>
+          <option>Bulk Export Order</option>
+          <option>Product Inquiry</option>
+          <option>Farmer Registration</option>
+          <option>Certification Info</option>
+          <option>Shipping & Logistics</option>
+          <option>Other</option>
+        </select>
+        <div class="cf-err" id="err-subject">⚠ Please select inquiry type</div>
+      </div>
+      <div class="cf-group" id="grp-msg">
+        <textarea id="cf-msg" placeholder="Your message..."></textarea>
+        <div class="cf-err" id="err-msg">⚠ Message must be at least 10 characters</div>
+      </div>
+      <button class="cf-send-btn" onclick="sendContactForm()">📤 Send Message</button>
+      <div class="cf-toast" id="cf-toast">✅ Message sent successfully! We'll respond within 24 hours.</div>
+    </div>
+
+  </div>
+  <div class="footer-bottom" data-i18n="footer_copy">© 2026 AgroGlobe. Built with ❤️ for India's farmers going global.</div>
+</footer>
+
+<script>
+const translations = {
+  en: {
+    flag:"🇬🇧", code:"EN", dir:"ltr",
+    topbar_msg:"🌍 Shipping to 40+ countries | Bulk export inquiries welcome",
+    logo_tag:"International Farm Market",
+    nav_home:"Home", nav_products:"Products", nav_export:"Export", nav_farmers:"Farmers", nav_about:"About", nav_cta:"Start Exporting",
+    hero_pill:"🌾 Trusted by buyers in 40+ countries",
+    hero_h1:"Farm Fresh Produce,<br><span>Shipped Worldwide</span>",
+    hero_p:"Connect directly with verified Indian farmers. Source premium vegetables, grains, spices, and more — export-certified and delivered to your door, anywhere on the globe.",
+    hero_btn1:"Browse Products", hero_btn2:"Become a Seller",
+    ships_to:"We ship to:", more_countries:"+33 more",
+    badge_farmers:"500+ Verified Farmers", badge_export:"✈️ Export Ready",
+    active_buyers:"ACTIVE BUYERS IN",
+    stat1:"Verified Farmers", stat2:"Countries Served", stat3:"Export Products", stat4:"Farmer Earnings",
+    cat_title:"Browse by Category", cat_sub:"Export-certified produce, ready for international shipment",
+    cat1:"Vegetables", cat2:"Fruits", cat3:"Grains", cat4:"Spices", cat5:"Honey", cat6:"Herbs", cat7:"Pulses", cat8:"Cold Press Oils",
+    prod_title:"Top Export Products", prod_sub:"High-demand produce across global markets",
+    tag_best:"Best Seller", tag_demand:"High Demand", tag_export:"Export Grade", tag_premium:"Premium",
+    p1_name:"Organic Tomatoes", p2_name:"Red Chilli Powder", p3_name:"Fresh Garlic", p4_name:"Basmati Rice",
+    how_title:"How It Works", how_sub:"From farm to your international destination in 4 simple steps",
+    step1_h:"Browse & Select", step1_p:"Search products by category, country of origin, or certification type.",
+    step2_h:"Request a Quote", step2_p:"Contact verified farmers directly or submit a bulk export inquiry.",
+    step3_h:"We Handle Logistics", step3_p:"We manage export documentation, cold chain, and international shipping.",
+    step4_h:"Delivered Worldwide", step4_p:"Receive fresh, certified produce at your doorstep — anywhere on earth.",
+    why_title:"Why AgroGlobe?", why_sub:"Built for global buyers, powered by local farmers",
+    t1_h:"Export Certified", t1_p:"All products carry APEDA, FSSAI, and phytosanitary certifications for global markets.",
+    t2_h:"Cold Chain Delivery", t2_p:"Temperature-controlled logistics from farm to port, preserving freshness worldwide.",
+    t3_h:"Multi-Currency Pricing", t3_p:"Pay in USD, EUR, AED, GBP, or INR. Transparent pricing with no hidden fees.",
+    t4_h:"Direct Farmer Connect", t4_p:"No middlemen. Chat directly with the farmer and negotiate on bulk orders.",
+    farmers_title:"Meet Our Verified Farmers", farmers_sub:"Every seller is identity-verified, farm-inspected, and export-certified",
+    verified:"Verified", experience:"Experience", rating:"Rating", countries_exp:"Countries", contact_farmer:"📩 Contact Farmer",
+    cta_h:"Ready to Sell Your Produce Globally?", cta_p:"Join 500+ farmers already earning in foreign currency by listing on AgroGlobe.", cta_btn:"Register as Farmer",
+    footer_brand_p:"Empowering Indian farmers to reach global buyers since 2024.",
+    footer_contact:"Contact", footer_links:"Quick Links", footer_ships:"We Ship To",
+    footer_copy:"© 2026 AgroGlobe. Built with ❤️ for India's farmers going global."
+  },
+  hi: {
+    flag:"🇮🇳", code:"HI", dir:"ltr",
+    topbar_msg:"🌍 40+ देशों में शिपिंग | थोक निर्यात पूछताछ का स्वागत है",
+    logo_tag:"अंतरराष्ट्रीय कृषि बाजार",
+    nav_home:"होम", nav_products:"उत्पाद", nav_export:"निर्यात", nav_farmers:"किसान", nav_about:"हमारे बारे में", nav_cta:"निर्यात शुरू करें",
+    hero_pill:"🌾 40+ देशों के खरीदारों द्वारा विश्वसनीय",
+    hero_h1:"ताज़ा खेत का माल,<br><span>दुनियाभर में भेजें</span>",
+    hero_p:"सत्यापित भारतीय किसानों से सीधे जुड़ें। प्रीमियम सब्जियां, अनाज, मसाले और बहुत कुछ — निर्यात प्रमाणित।",
+    hero_btn1:"उत्पाद देखें", hero_btn2:"विक्रेता बनें",
+    ships_to:"हम शिप करते हैं:", more_countries:"+33 और",
+    badge_farmers:"500+ सत्यापित किसान", badge_export:"✈️ निर्यात तैयार",
+    active_buyers:"सक्रिय खरीदार",
+    stat1:"सत्यापित किसान", stat2:"देश सेवित", stat3:"निर्यात उत्पाद", stat4:"किसान आय",
+    cat_title:"श्रेणी के अनुसार खोजें", cat_sub:"निर्यात प्रमाणित उत्पाद",
+    cat1:"सब्जियां", cat2:"फल", cat3:"अनाज", cat4:"मसाले", cat5:"शहद", cat6:"जड़ी-बूटियां", cat7:"दालें", cat8:"कोल्ड प्रेस तेल",
+    prod_title:"शीर्ष निर्यात उत्पाद", prod_sub:"वैश्विक बाजारों में उच्च मांग",
+    tag_best:"सबसे अधिक बिकने वाला", tag_demand:"अधिक मांग", tag_export:"निर्यात ग्रेड", tag_premium:"प्रीमियम",
+    p1_name:"जैविक टमाटर", p2_name:"लाल मिर्च पाउडर", p3_name:"ताज़ा लहसुन", p4_name:"बासमती चावल",
+    how_title:"यह कैसे काम करता है", how_sub:"खेत से आपके दरवाजे तक 4 आसान चरणों में",
+    step1_h:"खोजें और चुनें", step1_p:"श्रेणी, मूल देश या प्रमाणन से उत्पाद खोजें।",
+    step2_h:"कोटेशन मांगें", step2_p:"सत्यापित किसानों से सीधे संपर्क करें।",
+    step3_h:"हम लॉजिस्टिक्स संभालते हैं", step3_p:"हम निर्यात दस्तावेज़ और शिपिंग का प्रबंधन करते हैं।",
+    step4_h:"दुनियाभर में डिलीवरी", step4_p:"पृथ्वी पर कहीं भी ताज़ा प्रमाणित उत्पाद पाएं।",
+    why_title:"AgroGlobe क्यों?", why_sub:"वैश्विक खरीदारों के लिए, स्थानीय किसानों द्वारा",
+    t1_h:"निर्यात प्रमाणित", t1_p:"सभी उत्पादों में APEDA, FSSAI प्रमाणन हैं।",
+    t2_h:"कोल्ड चेन डिलीवरी", t2_p:"फार्म से बंदरगाह तक तापमान-नियंत्रित लॉजिस्टिक्स।",
+    t3_h:"मल्टी-करेंसी मूल्य निर्धारण", t3_p:"USD, EUR, AED, GBP, या INR में भुगतान करें।",
+    t4_h:"सीधा किसान संपर्क", t4_p:"कोई बिचौलिया नहीं। सीधे किसान से बात करें।",
+    farmers_title:"हमारे सत्यापित किसानों से मिलें", farmers_sub:"हर विक्रेता पहचान-सत्यापित और निर्यात प्रमाणित है",
+    verified:"सत्यापित", experience:"अनुभव", rating:"रेटिंग", countries_exp:"देश", contact_farmer:"📩 किसान से संपर्क करें",
+    cta_h:"वैश्विक स्तर पर बेचने के लिए तैयार हैं?", cta_p:"500+ किसान पहले से ही विदेशी मुद्रा में कमाई कर रहे हैं।", cta_btn:"किसान के रूप में पंजीकरण करें",
+    footer_brand_p:"2024 से भारतीय किसानों को वैश्विक खरीदारों से जोड़ना।",
+    footer_contact:"संपर्क", footer_links:"त्वरित लिंक", footer_ships:"हम शिप करते हैं",
+    footer_copy:"© 2026 AgroGlobe. भारत के किसानों के लिए ❤️ से बनाया गया।"
+  },
+  ar: {
+    flag:"🇦🇪", code:"AR", dir:"rtl",
+    topbar_msg:"🌍 الشحن إلى 40+ دولة | استفسارات التصدير بالجملة مرحب بها",
+    logo_tag:"سوق المزارع الدولي",
+    nav_home:"الرئيسية", nav_products:"المنتجات", nav_export:"التصدير", nav_farmers:"المزارعون", nav_about:"من نحن", nav_cta:"ابدأ التصدير",
+    hero_pill:"🌾 موثوق به من قبل مشترين في 40+ دولة",
+    hero_h1:"منتجات المزرعة الطازجة،<br><span>تُشحن في جميع أنحاء العالم</span>",
+    hero_p:"تواصل مباشرة مع المزارعين الهنديين المعتمدين. اشترِ الخضار والحبوب والتوابل الممتازة المعتمدة للتصدير.",
+    hero_btn1:"تصفح المنتجات", hero_btn2:"كن بائعاً",
+    ships_to:"نشحن إلى:", more_countries:"+33 أخرى",
+    badge_farmers:"500+ مزارع معتمد", badge_export:"✈️ جاهز للتصدير",
+    active_buyers:"المشترون النشطون في",
+    stat1:"مزارعون معتمدون", stat2:"دول تخدمها", stat3:"منتجات تصدير", stat4:"أرباح المزارعين",
+    cat_title:"تصفح حسب الفئة", cat_sub:"منتجات معتمدة للتصدير",
+    cat1:"خضروات", cat2:"فواكه", cat3:"حبوب", cat4:"توابل", cat5:"عسل", cat6:"أعشاب", cat7:"بقوليات", cat8:"زيوت معصورة على البارد",
+    prod_title:"أفضل منتجات التصدير", prod_sub:"منتجات عالية الطلب في الأسواق العالمية",
+    tag_best:"الأكثر مبيعاً", tag_demand:"طلب عالٍ", tag_export:"درجة التصدير", tag_premium:"ممتاز",
+    p1_name:"طماطم عضوية", p2_name:"مسحوق الفلفل الأحمر", p3_name:"ثوم طازج", p4_name:"أرز بسمتي",
+    how_title:"كيف يعمل", how_sub:"من المزرعة إلى وجهتك الدولية في 4 خطوات",
+    step1_h:"تصفح واختر", step1_p:"ابحث عن المنتجات حسب الفئة أو بلد المنشأ أو نوع الشهادة.",
+    step2_h:"اطلب عرض سعر", step2_p:"تواصل مع المزارعين المعتمدين مباشرة أو قدم استفساراً للتصدير بالجملة.",
+    step3_h:"نحن نتولى اللوجستيات", step3_p:"ندير وثائق التصدير والسلسلة الباردة والشحن الدولي.",
+    step4_h:"التوصيل في جميع أنحاء العالم", step4_p:"استلم منتجات طازجة معتمدة على بابك — في أي مكان على الأرض.",
+    why_title:"لماذا AgroGlobe؟", why_sub:"مبني للمشترين العالميين، مدعوم من المزارعين المحليين",
+    t1_h:"معتمد للتصدير", t1_p:"جميع المنتجات تحمل شهادات APEDA وFSSAI للأسواق العالمية.",
+    t2_h:"توصيل بالسلسلة الباردة", t2_p:"لوجستيات مضبوطة الحرارة من المزرعة إلى الميناء.",
+    t3_h:"تسعير متعدد العملات", t3_p:"ادفع بالدولار أو اليورو أو الدرهم أو الجنيه الإسترليني أو الروبية.",
+    t4_h:"تواصل مباشر مع المزارع", t4_p:"لا وسطاء. تحدث مباشرة مع المزارع وتفاوض على الطلبات الكبيرة.",
+    farmers_title:"تعرف على مزارعينا المعتمدين", farmers_sub:"كل بائع تم التحقق من هويته وفحص مزرعته وحصل على شهادة التصدير",
+    verified:"معتمد", experience:"الخبرة", rating:"التقييم", countries_exp:"دولة", contact_farmer:"📩 تواصل مع المزارع",
+    cta_h:"هل أنت مستعد لبيع منتجاتك عالمياً؟", cta_p:"انضم إلى 500+ مزارع يكسبون بالعملة الأجنبية.", cta_btn:"سجل كمزارع",
+    footer_brand_p:"تمكين المزارعين الهنديين للوصول إلى المشترين العالميين منذ 2024.",
+    footer_contact:"اتصل بنا", footer_links:"روابط سريعة", footer_ships:"نشحن إلى",
+    footer_copy:"© 2026 AgroGlobe. صُنع بـ ❤️ لمزارعي الهند."
+  },
+  de: {
+    flag:"🇩🇪", code:"DE", dir:"ltr",
+    topbar_msg:"🌍 Versand in 40+ Länder | Großhandels-Exportanfragen willkommen",
+    logo_tag:"Internationaler Agrarmarkt",
+    nav_home:"Start", nav_products:"Produkte", nav_export:"Export", nav_farmers:"Landwirte", nav_about:"Über uns", nav_cta:"Export starten",
+    hero_pill:"🌾 Von Käufern in 40+ Ländern vertraut",
+    hero_h1:"Frische Hofprodukte,<br><span>weltweit geliefert</span>",
+    hero_p:"Verbinden Sie sich direkt mit verifizierten indischen Landwirten. Kaufen Sie zertifizierte Exportwaren: Gemüse, Getreide, Gewürze und mehr.",
+    hero_btn1:"Produkte ansehen", hero_btn2:"Händler werden",
+    ships_to:"Wir liefern nach:", more_countries:"+33 weitere",
+    badge_farmers:"500+ verifizierte Landwirte", badge_export:"✈️ Exportbereit",
+    active_buyers:"AKTIVE KÄUFER IN",
+    stat1:"Verifizierte Landwirte", stat2:"Bediente Länder", stat3:"Exportprodukte", stat4:"Landwirts-Einnahmen",
+    cat_title:"Nach Kategorie suchen", cat_sub:"Exportzertifizierte Produkte für den internationalen Versand",
+    cat1:"Gemüse", cat2:"Obst", cat3:"Getreide", cat4:"Gewürze", cat5:"Honig", cat6:"Kräuter", cat7:"Hülsenfrüchte", cat8:"Kaltgepresste Öle",
+    prod_title:"Top-Exportprodukte", prod_sub:"Gefragte Produkte auf globalen Märkten",
+    tag_best:"Bestseller", tag_demand:"Hohe Nachfrage", tag_export:"Exportqualität", tag_premium:"Premium",
+    p1_name:"Bio-Tomaten", p2_name:"Rotes Chilipulver", p3_name:"Frischer Knoblauch", p4_name:"Basmatireis",
+    how_title:"So funktioniert es", how_sub:"Vom Bauernhof zu Ihrem internationalen Ziel in 4 einfachen Schritten",
+    step1_h:"Suchen & Auswählen", step1_p:"Produkte nach Kategorie, Herkunftsland oder Zertifizierung suchen.",
+    step2_h:"Angebot anfordern", step2_p:"Direkt mit verifizierten Landwirten Kontakt aufnehmen.",
+    step3_h:"Wir kümmern uns um die Logistik", step3_p:"Wir verwalten Exportdokumente, Kühlkette und internationalen Versand.",
+    step4_h:"Weltweit geliefert", step4_p:"Frische, zertifizierte Produkte an Ihre Tür — überall auf der Erde.",
+    why_title:"Warum AgroGlobe?", why_sub:"Für globale Käufer, angetrieben von lokalen Landwirten",
+    t1_h:"Exportzertifiziert", t1_p:"Alle Produkte tragen APEDA, FSSAI-Zertifizierungen für globale Märkte.",
+    t2_h:"Kühlkettenlieferung", t2_p:"Temperaturkontrollierte Logistik vom Hof bis zum Hafen.",
+    t3_h:"Mehrwährungs-Preisgestaltung", t3_p:"Zahlen Sie in USD, EUR, AED, GBP oder INR.",
+    t4_h:"Direkter Landwirtskontakt", t4_p:"Keine Mittelsmänner. Direkt mit dem Landwirt verhandeln.",
+    farmers_title:"Unsere verifizierten Landwirte", farmers_sub:"Jeder Verkäufer ist identitätsverifiziert und exportzertifiziert",
+    verified:"Verifiziert", experience:"Erfahrung", rating:"Bewertung", countries_exp:"Länder", contact_farmer:"📩 Landwirt kontaktieren",
+    cta_h:"Bereit, Ihre Produkte weltweit zu verkaufen?", cta_p:"Treten Sie 500+ Landwirten bei, die bereits in Fremdwährung verdienen.", cta_btn:"Als Landwirt registrieren",
+    footer_brand_p:"Indische Landwirte mit globalen Käufern verbinden seit 2024.",
+    footer_contact:"Kontakt", footer_links:"Schnelllinks", footer_ships:"Wir liefern nach",
+    footer_copy:"© 2026 AgroGlobe. Mit ❤️ für Indiens Landwirte gebaut."
+  },
+  fr: {
+    flag:"🇫🇷", code:"FR", dir:"ltr",
+    topbar_msg:"🌍 Livraison dans 40+ pays | Demandes d'exportation en gros bienvenues",
+    logo_tag:"Marché agricole international",
+    nav_home:"Accueil", nav_products:"Produits", nav_export:"Export", nav_farmers:"Agriculteurs", nav_about:"À propos", nav_cta:"Commencer l'export",
+    hero_pill:"🌾 Approuvé par des acheteurs dans 40+ pays",
+    hero_h1:"Produits frais de la ferme,<br><span>livrés dans le monde entier</span>",
+    hero_p:"Connectez-vous directement avec des agriculteurs indiens vérifiés. Achetez des légumes, céréales et épices certifiés à l'export.",
+    hero_btn1:"Parcourir les produits", hero_btn2:"Devenir vendeur",
+    ships_to:"Nous livrons vers :", more_countries:"+33 autres",
+    badge_farmers:"500+ agriculteurs vérifiés", badge_export:"✈️ Prêt à l'export",
+    active_buyers:"ACHETEURS ACTIFS EN",
+    stat1:"Agriculteurs vérifiés", stat2:"Pays desservis", stat3:"Produits d'export", stat4:"Revenus des agriculteurs",
+    cat_title:"Parcourir par catégorie", cat_sub:"Produits certifiés à l'export",
+    cat1:"Légumes", cat2:"Fruits", cat3:"Céréales", cat4:"Épices", cat5:"Miel", cat6:"Herbes", cat7:"Légumineuses", cat8:"Huiles pressées à froid",
+    prod_title:"Meilleurs produits d'export", prod_sub:"Produits à forte demande sur les marchés mondiaux",
+    tag_best:"Meilleure vente", tag_demand:"Forte demande", tag_export:"Grade export", tag_premium:"Premium",
+    p1_name:"Tomates biologiques", p2_name:"Poudre de piment rouge", p3_name:"Ail frais", p4_name:"Riz basmati",
+    how_title:"Comment ça marche", how_sub:"De la ferme à votre destination en 4 étapes simples",
+    step1_h:"Parcourir et choisir", step1_p:"Recherchez des produits par catégorie ou certification.",
+    step2_h:"Demander un devis", step2_p:"Contactez directement les agriculteurs vérifiés.",
+    step3_h:"Nous gérons la logistique", step3_p:"Nous gérons les documents d'export et la chaîne du froid.",
+    step4_h:"Livraison mondiale", step4_p:"Recevez des produits frais certifiés à votre porte.",
+    why_title:"Pourquoi AgroGlobe?", why_sub:"Pour les acheteurs mondiaux, alimenté par les agriculteurs locaux",
+    t1_h:"Certifié à l'export", t1_p:"Tous les produits portent les certifications APEDA et FSSAI.",
+    t2_h:"Livraison chaîne du froid", t2_p:"Logistique à température contrôlée de la ferme au port.",
+    t3_h:"Tarification multi-devises", t3_p:"Payez en USD, EUR, AED, GBP ou INR.",
+    t4_h:"Contact direct avec l'agriculteur", t4_p:"Pas d'intermédiaires. Négociez directement.",
+    farmers_title:"Rencontrez nos agriculteurs vérifiés", farmers_sub:"Chaque vendeur est vérifié et certifié à l'export",
+    verified:"Vérifié", experience:"Expérience", rating:"Note", countries_exp:"Pays", contact_farmer:"📩 Contacter l'agriculteur",
+    cta_h:"Prêt à vendre vos produits mondialement?", cta_p:"Rejoignez 500+ agriculteurs qui gagnent déjà en devises étrangères.", cta_btn:"S'inscrire comme agriculteur",
+    footer_brand_p:"Connexion des agriculteurs indiens aux acheteurs mondiaux depuis 2024.",
+    footer_contact:"Contact", footer_links:"Liens rapides", footer_ships:"Nous livrons vers",
+    footer_copy:"© 2026 AgroGlobe. Fait avec ❤️ pour les agriculteurs indiens."
+  },
+  es: {
+    flag:"🇪🇸", code:"ES", dir:"ltr",
+    topbar_msg:"🌍 Envíos a 40+ países | Consultas de exportación al por mayor bienvenidas",
+    logo_tag:"Mercado Agrícola Internacional",
+    nav_home:"Inicio", nav_products:"Productos", nav_export:"Exportar", nav_farmers:"Agricultores", nav_about:"Nosotros", nav_cta:"Empezar a exportar",
+    hero_pill:"🌾 Confiado por compradores en 40+ países",
+    hero_h1:"Productos frescos del campo,<br><span>enviados al mundo</span>",
+    hero_p:"Conéctese directamente con agricultores indios verificados. Compre vegetales, granos y especias certificados para exportación.",
+    hero_btn1:"Ver productos", hero_btn2:"Convertirse en vendedor",
+    ships_to:"Enviamos a:", more_countries:"+33 más",
+    badge_farmers:"500+ agricultores verificados", badge_export:"✈️ Listo para exportar",
+    active_buyers:"COMPRADORES ACTIVOS EN",
+    stat1:"Agricultores verificados", stat2:"Países atendidos", stat3:"Productos de exportación", stat4:"Ingresos de agricultores",
+    cat_title:"Explorar por categoría", cat_sub:"Productos certificados para exportación",
+    cat1:"Vegetales", cat2:"Frutas", cat3:"Granos", cat4:"Especias", cat5:"Miel", cat6:"Hierbas", cat7:"Legumbres", cat8:"Aceites prensados en frío",
+    prod_title:"Productos de exportación destacados", prod_sub:"Productos de alta demanda en mercados globales",
+    tag_best:"Más vendido", tag_demand:"Alta demanda", tag_export:"Grado exportación", tag_premium:"Premium",
+    p1_name:"Tomates orgánicos", p2_name:"Polvo de chile rojo", p3_name:"Ajo fresco", p4_name:"Arroz basmati",
+    how_title:"Cómo funciona", how_sub:"De la granja a su destino en 4 pasos",
+    step1_h:"Buscar y elegir", step1_p:"Busque productos por categoría, origen o certificación.",
+    step2_h:"Solicitar cotización", step2_p:"Contacte directamente a los agricultores verificados.",
+    step3_h:"Manejamos la logística", step3_p:"Gestionamos documentos de exportación y envío internacional.",
+    step4_h:"Entrega mundial", step4_p:"Reciba productos frescos certificados en su puerta.",
+    why_title:"¿Por qué AgroGlobe?", why_sub:"Para compradores globales, impulsado por agricultores locales",
+    t1_h:"Certificado para exportación", t1_p:"Todos los productos tienen certificaciones APEDA y FSSAI.",
+    t2_h:"Entrega en cadena de frío", t2_p:"Logística de temperatura controlada de la granja al puerto.",
+    t3_h:"Precios en múltiples monedas", t3_p:"Pague en USD, EUR, AED, GBP o INR.",
+    t4_h:"Conexión directa con agricultores", t4_p:"Sin intermediarios. Negocie directamente.",
+    farmers_title:"Conozca nuestros agricultores verificados", farmers_sub:"Cada vendedor está verificado y certificado para exportación",
+    verified:"Verificado", experience:"Experiencia", rating:"Calificación", countries_exp:"Países", contact_farmer:"📩 Contactar agricultor",
+    cta_h:"¿Listo para vender sus productos globalmente?", cta_p:"Únase a 500+ agricultores que ya ganan en moneda extranjera.", cta_btn:"Registrarse como agricultor",
+    footer_brand_p:"Conectando agricultores indios con compradores globales desde 2024.",
+    footer_contact:"Contacto", footer_links:"Enlaces rápidos", footer_ships:"Enviamos a",
+    footer_copy:"© 2026 AgroGlobe. Hecho con ❤️ para los agricultores de la India."
+  },
+  ja: {
+    flag:"🇯🇵", code:"JA", dir:"ltr",
+    topbar_msg:"🌍 40カ国以上に発送 | 大量輸出のお問い合わせ歓迎",
+    logo_tag:"国際農産物市場",
+    nav_home:"ホーム", nav_products:"商品", nav_export:"輸出", nav_farmers:"農家", nav_about:"私たちについて", nav_cta:"輸出を始める",
+    hero_pill:"🌾 40カ国以上のバイヤーに信頼されています",
+    hero_h1:"農場直送の新鮮な農産物、<br><span>世界中にお届け</span>",
+    hero_p:"認証済みのインド農家と直接つながりましょう。輸出認定された野菜、穀物、スパイスなどをお届けします。",
+    hero_btn1:"商品を見る", hero_btn2:"販売者になる",
+    ships_to:"発送先：", more_countries:"他33か国",
+    badge_farmers:"500人以上の認証済み農家", badge_export:"✈️ 輸出対応",
+    active_buyers:"アクティブバイヤー",
+    stat1:"認証済み農家", stat2:"対応国数", stat3:"輸出商品", stat4:"農家の収益",
+    cat_title:"カテゴリで探す", cat_sub:"国際輸送に対応した輸出認証商品",
+    cat1:"野菜", cat2:"果物", cat3:"穀物", cat4:"スパイス", cat5:"ハチミツ", cat6:"ハーブ", cat7:"豆類", cat8:"コールドプレスオイル",
+    prod_title:"トップ輸出商品", prod_sub:"世界市場で需要の高い農産物",
+    tag_best:"ベストセラー", tag_demand:"高需要", tag_export:"輸出グレード", tag_premium:"プレミアム",
+    p1_name:"有機トマト", p2_name:"赤唐辛子パウダー", p3_name:"新鮮ニンニク", p4_name:"バスマティ米",
+    how_title:"ご利用方法", how_sub:"農場から国際目的地まで4ステップ",
+    step1_h:"検索・選択", step1_p:"カテゴリ、原産国、または認証タイプで商品を検索します。",
+    step2_h:"見積もり依頼", step2_p:"認証済み農家に直接連絡するか、一括輸出の問い合わせをします。",
+    step3_h:"物流はお任せ", step3_p:"輸出書類、コールドチェーン、国際輸送を管理します。",
+    step4_h:"世界中に配達", step4_p:"地球上どこでも新鮮な認証農産物をお届けします。",
+    why_title:"なぜAgroGlobe？", why_sub:"グローバルバイヤーのために、地元農家が支える",
+    t1_h:"輸出認証済み", t1_p:"全商品にAPEDA、FSSAI認証があります。",
+    t2_h:"コールドチェーン配送", t2_p:"農場から港まで温度管理された物流。",
+    t3_h:"マルチ通貨価格設定", t3_p:"USD、EUR、AED、GBP、またはINRでお支払い可能。",
+    t4_h:"農家への直接連絡", t4_p:"仲介業者なし。農家と直接交渉できます。",
+    farmers_title:"認証済み農家をご紹介", farmers_sub:"すべての販売者は身元確認済みで輸出認証を受けています",
+    verified:"認証済み", experience:"経験", rating:"評価", countries_exp:"輸出先国", contact_farmer:"📩 農家に連絡",
+    cta_h:"農産物を世界に販売する準備はできていますか？", cta_p:"500人以上の農家がすでに外貨で収益を上げています。", cta_btn:"農家として登録",
+    footer_brand_p:"2024年からインドの農家と世界のバイヤーをつなぐ。",
+    footer_contact:"お問い合わせ", footer_links:"クイックリンク", footer_ships:"発送先",
+    footer_copy:"© 2026 AgroGlobe. インドの農家のために❤️で作られました。"
+  },
+  zh: {
+    flag:"🇨🇳", code:"ZH", dir:"ltr",
+    topbar_msg:"🌍 发货至40+国家 | 欢迎批量出口询价",
+    logo_tag:"国际农产品市场",
+    nav_home:"首页", nav_products:"产品", nav_export:"出口", nav_farmers:"农民", nav_about:"关于我们", nav_cta:"开始出口",
+    hero_pill:"🌾 40+国家买家的信赖之选",
+    hero_h1:"农场新鲜产品，<br><span>全球配送</span>",
+    hero_p:"直接与经过认证的印度农民联系。购买出口认证的优质蔬菜、谷物、香料等产品。",
+    hero_btn1:"浏览产品", hero_btn2:"成为卖家",
+    ships_to:"我们发货至：", more_countries:"+33个",
+    badge_farmers:"500+认证农民", badge_export:"✈️ 出口就绪",
+    active_buyers:"活跃买家",
+    stat1:"认证农民", stat2:"服务国家", stat3:"出口产品", stat4:"农民收益",
+    cat_title:"按类别浏览", cat_sub:"出口认证产品，可用于国际运输",
+    cat1:"蔬菜", cat2:"水果", cat3:"谷物", cat4:"香料", cat5:"蜂蜜", cat6:"草药", cat7:"豆类", cat8:"冷榨油",
+    prod_title:"顶级出口产品", prod_sub:"全球市场高需求产品",
+    tag_best:"畅销", tag_demand:"高需求", tag_export:"出口级", tag_premium:"高端",
+    p1_name:"有机番茄", p2_name:"红辣椒粉", p3_name:"新鲜大蒜", p4_name:"印度香米",
+    how_title:"运作方式", how_sub:"从农场到目的地4个简单步骤",
+    step1_h:"浏览和选择", step1_p:"按类别、原产国或认证类型搜索产品。",
+    step2_h:"请求报价", step2_p:"直接联系认证农民或提交批量出口询价。",
+    step3_h:"物流由我们处理", step3_p:"我们管理出口文件、冷链和国际运输。",
+    step4_h:"全球配送", step4_p:"在地球任何地方收到新鲜认证产品。",
+    why_title:"为什么选择AgroGlobe？", why_sub:"为全球买家而建，由当地农民提供支持",
+    t1_h:"出口认证", t1_p:"所有产品均持有APEDA、FSSAI认证。",
+    t2_h:"冷链配送", t2_p:"从农场到港口的温控物流。",
+    t3_h:"多币种定价", t3_p:"支持USD、EUR、AED、GBP或INR支付。",
+    t4_h:"直接联系农民", t4_p:"没有中间商。直接与农民协商批量订单。",
+    farmers_title:"认识我们的认证农民", farmers_sub:"每位卖家均经过身份验证、农场检查和出口认证",
+    verified:"已认证", experience:"经验", rating:"评分", countries_exp:"出口国家", contact_farmer:"📩 联系农民",
+    cta_h:"准备好在全球销售您的产品了吗？", cta_p:"加入500+已在赚取外汇的农民。", cta_btn:"注册成为农民",
+    footer_brand_p:"自2024年起连接印度农民与全球买家。",
+    footer_contact:"联系我们", footer_links:"快速链接", footer_ships:"我们发货至",
+    footer_copy:"© 2026 AgroGlobe. 为印度农民用❤️打造。"
+  },
+  pt: {
+    flag:"🇧🇷", code:"PT", dir:"ltr",
+    topbar_msg:"🌍 Envio para 40+ países | Consultas de exportação em atacado bem-vindas",
+    logo_tag:"Mercado Agrícola Internacional",
+    nav_home:"Início", nav_products:"Produtos", nav_export:"Exportar", nav_farmers:"Agricultores", nav_about:"Sobre nós", nav_cta:"Começar a exportar",
+    hero_pill:"🌾 Confiado por compradores em 40+ países",
+    hero_h1:"Produtos frescos da fazenda,<br><span>enviados ao mundo todo</span>",
+    hero_p:"Conecte-se diretamente com agricultores indianos verificados. Compre vegetais, grãos e especiarias certificados para exportação.",
+    hero_btn1:"Ver produtos", hero_btn2:"Torne-se vendedor",
+    ships_to:"Enviamos para:", more_countries:"+33 mais",
+    badge_farmers:"500+ agricultores verificados", badge_export:"✈️ Pronto para exportar",
+    active_buyers:"COMPRADORES ATIVOS EM",
+    stat1:"Agricultores verificados", stat2:"Países atendidos", stat3:"Produtos de exportação", stat4:"Ganhos dos agricultores",
+    cat_title:"Explorar por categoria", cat_sub:"Produtos certificados para exportação",
+    cat1:"Vegetais", cat2:"Frutas", cat3:"Grãos", cat4:"Especiarias", cat5:"Mel", cat6:"Ervas", cat7:"Leguminosas", cat8:"Óleos prensados a frio",
+    prod_title:"Principais produtos de exportação", prod_sub:"Produtos de alta demanda nos mercados globais",
+    tag_best:"Mais vendido", tag_demand:"Alta demanda", tag_export:"Grau de exportação", tag_premium:"Premium",
+    p1_name:"Tomates orgânicos", p2_name:"Pimenta vermelha em pó", p3_name:"Alho fresco", p4_name:"Arroz basmati",
+    how_title:"Como funciona", how_sub:"Da fazenda ao seu destino em 4 passos simples",
+    step1_h:"Procurar e selecionar", step1_p:"Pesquise produtos por categoria ou certificação.",
+    step2_h:"Solicitar orçamento", step2_p:"Entre em contato diretamente com os agricultores verificados.",
+    step3_h:"Cuidamos da logística", step3_p:"Gerenciamos documentos de exportação e envio internacional.",
+    step4_h:"Entrega mundial", step4_p:"Receba produtos frescos certificados na sua porta.",
+    why_title:"Por que AgroGlobe?", why_sub:"Para compradores globais, alimentado por agricultores locais",
+    t1_h:"Certificado para exportação", t1_p:"Todos os produtos possuem certificações APEDA e FSSAI.",
+    t2_h:"Entrega em cadeia de frio", t2_p:"Logística de temperatura controlada da fazenda ao porto.",
+    t3_h:"Preços em múltiplas moedas", t3_p:"Pague em USD, EUR, AED, GBP ou INR.",
+    t4_h:"Contato direto com agricultores", t4_p:"Sem intermediários. Negocie diretamente.",
+    farmers_title:"Conheça nossos agricultores verificados", farmers_sub:"Cada vendedor é verificado e certificado para exportação",
+    verified:"Verificado", experience:"Experiência", rating:"Avaliação", countries_exp:"Países", contact_farmer:"📩 Contatar agricultor",
+    cta_h:"Pronto para vender seus produtos globalmente?", cta_p:"Junte-se a 500+ agricultores que já ganham em moeda estrangeira.", cta_btn:"Registrar como agricultor",
+    footer_brand_p:"Conectando agricultores indianos a compradores globais desde 2024.",
+    footer_contact:"Contato", footer_links:"Links rápidos", footer_ships:"Enviamos para",
+    footer_copy:"© 2026 AgroGlobe. Feito com ❤️ para os agricultores da Índia."
+  },
+  ko: {
+    flag:"🇰🇷", code:"KO", dir:"ltr",
+    topbar_msg:"🌍 40개국 이상 배송 | 대량 수출 문의 환영",
+    logo_tag:"국제 농산물 시장",
+    nav_home:"홈", nav_products:"제품", nav_export:"수출", nav_farmers:"농부", nav_about:"소개", nav_cta:"수출 시작",
+    hero_pill:"🌾 40개국 이상의 구매자가 신뢰하는",
+    hero_h1:"농장 신선 농산물,<br><span>전 세계 배송</span>",
+    hero_p:"검증된 인도 농부들과 직접 연결하세요. 수출 인증된 프리미엄 채소, 곡물, 향신료 등을 전 세계 어디에나 배송해 드립니다.",
+    hero_btn1:"제품 보기", hero_btn2:"판매자 되기",
+    ships_to:"배송 국가:", more_countries:"+33개국",
+    badge_farmers:"500명 이상의 인증 농부", badge_export:"✈️ 수출 준비 완료",
+    active_buyers:"활성 구매자",
+    stat1:"인증된 농부", stat2:"서비스 국가", stat3:"수출 제품", stat4:"농부 수익",
+    cat_title:"카테고리로 찾기", cat_sub:"국제 배송을 위한 수출 인증 농산물",
+    cat1:"채소", cat2:"과일", cat3:"곡물", cat4:"향신료", cat5:"꿀", cat6:"허브", cat7:"두류", cat8:"냉압착 오일",
+    prod_title:"주요 수출 제품", prod_sub:"세계 시장에서 수요가 높은 농산물",
+    tag_best:"베스트셀러", tag_demand:"높은 수요", tag_export:"수출 등급", tag_premium:"프리미엄",
+    p1_name:"유기농 토마토", p2_name:"붉은 고추 가루", p3_name:"신선한 마늘", p4_name:"바스마티 쌀",
+    how_title:"이용 방법", how_sub:"농장에서 국제 목적지까지 4단계",
+    step1_h:"검색 및 선택", step1_p:"카테고리, 원산지 또는 인증 유형으로 제품을 검색하세요.",
+    step2_h:"견적 요청", step2_p:"인증된 농부에게 직접 연락하거나 대량 수출 문의를 제출하세요.",
+    step3_h:"물류 처리", step3_p:"수출 서류, 콜드체인 및 국제 배송을 관리합니다.",
+    step4_h:"전 세계 배송", step4_p:"지구 어디에서나 신선한 인증 농산물을 받아보세요.",
+    why_title:"왜 AgroGlobe인가요?", why_sub:"글로벌 구매자를 위해, 지역 농부들이 지원합니다",
+    t1_h:"수출 인증", t1_p:"모든 제품에 APEDA, FSSAI 인증이 있습니다.",
+    t2_h:"콜드체인 배송", t2_p:"농장에서 항구까지 온도 제어 물류.",
+    t3_h:"다중 통화 가격", t3_p:"USD, EUR, AED, GBP 또는 INR로 결제 가능.",
+    t4_h:"농부 직접 연결", t4_p:"중간 업자 없음. 농부와 직접 협상하세요.",
+    farmers_title:"인증된 농부들을 만나보세요", farmers_sub:"모든 판매자는 신원 확인 및 수출 인증을 받았습니다",
+    verified:"인증됨", experience:"경험", rating:"평점", countries_exp:"국가", contact_farmer:"📩 농부에게 연락",
+    cta_h:"전 세계에 농산물을 판매할 준비가 되셨나요?", cta_p:"이미 외화로 수익을 올리고 있는 500명 이상의 농부와 함께하세요.", cta_btn:"농부로 등록하기",
+    footer_brand_p:"2024년부터 인도 농부들을 글로벌 구매자와 연결합니다.",
+    footer_contact:"연락처", footer_links:"빠른 링크", footer_ships:"배송 국가",
+    footer_copy:"© 2026 AgroGlobe. 인도 농부들을 위해 ❤️로 만들었습니다."
+  },
+  mr: {
+    flag:"🇮🇳", code:"MR", dir:"ltr",
+    topbar_msg:"🌍 ४०+ देशांमध्ये शिपिंग | घाऊक निर्यात चौकशी स्वागतार्ह",
+    logo_tag:"आंतरराष्ट्रीय शेती बाजार",
+    nav_home:"मुखपृष्ठ", nav_products:"उत्पादने", nav_export:"निर्यात", nav_farmers:"शेतकरी", nav_about:"आमच्याबद्दल", nav_cta:"निर्यात सुरू करा",
+    hero_pill:"🌾 ४०+ देशांतील खरेदीदारांनी विश्वास ठेवलेला",
+    hero_h1:"शेतातून थेट ताजी उत्पादने,<br><span>जगभर पाठवली जातात</span>",
+    hero_p:"सत्यापित भारतीय शेतकऱ्यांशी थेट जोडा. निर्यात-प्रमाणित भाज्या, धान्य, मसाले आणि बरेच काही — जगाच्या कानाकोपऱ्यात पोहोचवले जाते.",
+    hero_btn1:"उत्पादने पाहा", hero_btn2:"विक्रेता व्हा",
+    ships_to:"आम्ही पाठवतो:", more_countries:"+३३ अधिक",
+    badge_farmers:"५००+ सत्यापित शेतकरी", badge_export:"✈️ निर्यातीसाठी तयार",
+    active_buyers:"सक्रिय खरेदीदार",
+    stat1:"सत्यापित शेतकरी", stat2:"सेवा दिलेले देश", stat3:"निर्यात उत्पादने", stat4:"शेतकऱ्यांची कमाई",
+    cat_title:"श्रेणीनुसार शोधा", cat_sub:"आंतरराष्ट्रीय शिपमेंटसाठी निर्यात-प्रमाणित उत्पादने",
+    cat1:"भाज्या", cat2:"फळे", cat3:"धान्ये", cat4:"मसाले", cat5:"मध", cat6:"औषधी वनस्पती", cat7:"डाळी", cat8:"कोल्ड प्रेस तेले",
+    prod_title:"शीर्ष निर्यात उत्पादने", prod_sub:"जागतिक बाजारपेठांमध्ये जास्त मागणी असलेली उत्पादने",
+    tag_best:"सर्वाधिक विकली जाणारी", tag_demand:"जास्त मागणी", tag_export:"निर्यात दर्जा", tag_premium:"प्रीमियम",
+    p1_name:"सेंद्रिय टोमॅटो", p2_name:"लाल मिरची पावडर", p3_name:"ताजा लसूण", p4_name:"बासमती तांदूळ",
+    how_title:"हे कसे कार्य करते", how_sub:"शेतापासून आंतरराष्ट्रीय गंतव्यापर्यंत ४ सोप्या पायऱ्यांमध्ये",
+    step1_h:"शोधा आणि निवडा", step1_p:"श्रेणी, मूळ देश किंवा प्रमाणन प्रकारानुसार उत्पादने शोधा.",
+    step2_h:"कोटेशन मागवा", step2_p:"सत्यापित शेतकऱ्यांशी थेट संपर्क करा किंवा घाऊक निर्यात चौकशी सबमिट करा.",
+    step3_h:"आम्ही लॉजिस्टिक्स सांभाळतो", step3_p:"आम्ही निर्यात कागदपत्रे, कोल्ड चेन आणि आंतरराष्ट्रीय शिपिंग व्यवस्थापित करतो.",
+    step4_h:"जगभर डिलिव्हरी", step4_p:"पृथ्वीवर कुठेही तुमच्या दारापर्यंत ताजी प्रमाणित उत्पादने मिळवा.",
+    why_title:"AgroGlobe का निवडावे?", why_sub:"जागतिक खरेदीदारांसाठी बनवले, स्थानिक शेतकऱ्यांद्वारे समर्थित",
+    t1_h:"निर्यात प्रमाणित", t1_p:"सर्व उत्पादनांकडे जागतिक बाजारपेठांसाठी APEDA, FSSAI प्रमाणपत्रे आहेत.",
+    t2_h:"कोल्ड चेन डिलिव्हरी", t2_p:"शेतापासून बंदरापर्यंत तापमान-नियंत्रित लॉजिस्टिक्स.",
+    t3_h:"बहु-चलन किंमत", t3_p:"USD, EUR, AED, GBP किंवा INR मध्ये पैसे द्या.",
+    t4_h:"थेट शेतकरी संपर्क", t4_p:"कोणतेही दलाल नाहीत. शेतकऱ्याशी थेट बोला आणि घाऊक ऑर्डरवर वाटाघाटी करा.",
+    farmers_title:"आमच्या सत्यापित शेतकऱ्यांना भेटा", farmers_sub:"प्रत्येक विक्रेता ओळख-सत्यापित, शेत-तपासणी केलेला आणि निर्यात-प्रमाणित आहे",
+    verified:"सत्यापित", experience:"अनुभव", rating:"रेटिंग", countries_exp:"देश", contact_farmer:"📩 शेतकऱ्याशी संपर्क करा",
+    cta_h:"तुमची उत्पादने जागतिक स्तरावर विकण्यास तयार आहात?", cta_p:"५००+ शेतकरी आधीच परकीय चलनात कमाई करत आहेत.", cta_btn:"शेतकरी म्हणून नोंदणी करा",
+    footer_brand_p:"२०२४ पासून भारतीय शेतकऱ्यांना जागतिक खरेदीदारांशी जोडणे.",
+    footer_contact:"संपर्क", footer_links:"द्रुत दुवे", footer_ships:"आम्ही पाठवतो",
+    footer_copy:"© २०२६ AgroGlobe. भारतातील शेतकऱ्यांसाठी ❤️ ने बनवले."
+  }
+};
+
+let currentLang = 'en';
+
+function toggleLangDropdown() {
+  document.getElementById('lang-dropdown').classList.toggle('open');
+}
+
+document.addEventListener('click', function(e) {
+  const sw = document.querySelector('.lang-switcher');
+  if (sw && !sw.contains(e.target)) {
+    document.getElementById('lang-dropdown').classList.remove('open');
+  }
+});
+
+function setLang(lang) {
+  currentLang = lang;
+  const t = translations[lang];
+  document.documentElement.lang = lang;
+  document.documentElement.dir = t.dir || 'ltr';
+
+  // Update flag & code
+  document.getElementById('current-flag').textContent = t.flag;
+  document.getElementById('current-lang').textContent = t.code;
+
+  // Highlight active
+  document.querySelectorAll('.lang-option').forEach(el => el.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+
+  // Translate all elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key] !== undefined) {
+      if (el.tagName === 'H1') {
+        el.innerHTML = t[key];
+      } else {
+        el.textContent = t[key];
+      }
+    }
+  });
+
+  document.getElementById('lang-dropdown').classList.remove('open');
+}
+
+// ── EMAILJS CONFIG ─────────────────────────────────────────────────
+const EJ_PUBLIC_KEY   = 'VbLa12KhHBzPBVLQs';
+const EJ_SERVICE_ID   = 'service_fotjna5';
+const EJ_TEMPLATE_ID  = 'template_pz328wn';
+
+(function(){
+  emailjs.init(EJ_PUBLIC_KEY);
+  console.log('EmailJS initialized with key:', EJ_PUBLIC_KEY);
+})();
+
+// ── CONTACT FORM VALIDATION ───────────────────────────────────────
+function setField(id, valid, msg) {
+  const grp = document.getElementById('grp-' + id);
+  const err = document.getElementById('err-' + id);
+  grp.classList.remove('has-error', 'is-valid');
+  if (!valid) {
+    grp.classList.add('has-error');
+    if (msg) err.textContent = '⚠ ' + msg;
+  } else {
+    grp.classList.add('is-valid');
+  }
+  return valid;
+}
+
+function sendContactForm() {
+  const name    = document.getElementById('cf-name').value.trim();
+  const email   = document.getElementById('cf-email').value.trim();
+  const phone   = document.getElementById('cf-phone').value.trim();
+  const country = document.getElementById('cf-country').value;
+  const subject = document.getElementById('cf-subject').value;
+  const msg     = document.getElementById('cf-msg').value.trim();
+
+  const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const phoneRx = /^\+?[\d\s\-().]{7,}$/;
+
+  let ok = true;
+
+  if (!name)               { setField('name', false, 'Full name is required'); ok = false; }
+  else if (name.length < 2){ setField('name', false, 'Name must be at least 2 characters'); ok = false; }
+  else                       setField('name', true);
+
+  if (!email)                    { setField('email', false, 'Email address is required'); ok = false; }
+  else if (!emailRx.test(email)) { setField('email', false, 'Enter a valid email (e.g. you@example.com)'); ok = false; }
+  else                             setField('email', true);
+
+  if (!phone)                    { setField('phone', false, 'Phone number is required'); ok = false; }
+  else if (!phoneRx.test(phone)) { setField('phone', false, 'Enter a valid phone number (min 7 digits)'); ok = false; }
+  else                             setField('phone', true);
+
+  if (!country) { setField('country', false, 'Please select your country'); ok = false; }
+  else            setField('country', true);
+
+  if (!subject) { setField('subject', false, 'Please select an inquiry type'); ok = false; }
+  else            setField('subject', true);
+
+  if (!msg)              { setField('msg', false, 'Message cannot be empty'); ok = false; }
+  else if (msg.length<10){ setField('msg', false, 'Message must be at least 10 characters'); ok = false; }
+  else                     setField('msg', true);
+
+  if (!ok) return;
+
+  const btn   = document.querySelector('.cf-send-btn');
+  const toast = document.getElementById('cf-toast');
+  btn.disabled    = true;
+  btn.textContent = '⏳ Sending...';
+  toast.style.display = 'none';
+
+  // Template variables — must match your EmailJS template placeholders
+  const templateParams = {
+    from_name:    name,
+    from_email:   email,
+    phone:        phone,
+    country:      country,
+    inquiry_type: subject,
+    message:      msg,
+    to_name:      'AgroGlobe Team'
+  };
+
+  emailjs.send(EJ_SERVICE_ID, EJ_TEMPLATE_ID, templateParams)
+    .then((response) => {
+      console.log('EmailJS SUCCESS:', response.status, response.text);
+      btn.textContent = '✅ Sent!';
+      toast.style.color   = 'var(--lime)';
+      toast.textContent   = '✅ Message sent! We\'ll respond within 24 hours.';
+      toast.style.display = 'block';
+
+      // Reset form
+      ['cf-name','cf-email','cf-phone','cf-msg'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('cf-country').value = '';
+      document.getElementById('cf-subject').value = '';
+      ['name','email','phone','country','subject','msg'].forEach(id =>
+        document.getElementById('grp-' + id).classList.remove('is-valid','has-error')
+      );
+
+      setTimeout(() => {
+        btn.disabled    = false;
+        btn.textContent = '📤 Send Message';
+        toast.style.display = 'none';
+      }, 5000);
+    })
+    .catch((error) => {
+      console.error('EmailJS FAILED:', JSON.stringify(error));
+      btn.disabled    = false;
+      btn.textContent = '📤 Send Message';
+      const code = error.status || '';
+      const text = error.text || error.message || JSON.stringify(error);
+      toast.style.color   = '#ff8a8a';
+      toast.textContent   = '❌ Error ' + code + ': ' + text;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 10000);
+    });
+}
+
+// Live clear error on typing
+['name','email','phone'].forEach(id => {
+  const el = document.getElementById('cf-' + id);
+  if (el) el.addEventListener('input', () => {
+    if (document.getElementById('grp-' + id).classList.contains('has-error') && el.value.trim())
+      document.getElementById('grp-' + id).classList.remove('has-error');
+  });
+});
+['country','subject'].forEach(id => {
+  const el = document.getElementById('cf-' + id);
+  if (el) el.addEventListener('change', () => {
+    if (document.getElementById('grp-' + id).classList.contains('has-error') && el.value)
+      document.getElementById('grp-' + id).classList.remove('has-error');
+  });
+});
+</script>
+</body>
+</html>
